@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Pecah Telur — Sinarmas Multifinance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red: #C8102E;
+    --red-dark: #7A0C1E;
+    --red-deep: #4A060F;
+    --gold: #D4AF37;
+    --gold-light: #F3D77C;
+    --gold-soft: #FBEFC7;
+    --cream: #FFF9F0;
+    --ink: #2A1013;
+    --ink-soft: #6b4b4f;
+    --white: #FFFFFF;
+    --ok: #1F8A4C;
+    --warn: #B7791F;
+    --danger: #C8102E;
+    --radius: 18px;
+    --shadow: 0 12px 30px rgba(74,6,15,0.18);
+    --shadow-sm: 0 4px 12px rgba(74,6,15,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(212,175,55,0.10), transparent 45%),
+      radial-gradient(circle at 100% 100%, rgba(200,16,46,0.06), transparent 40%),
+      var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Poppins',sans-serif;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  ::selection{background:var(--gold-light);}
+
+  /* ---------- batik-inspired diagonal texture (signature motif) ---------- */
+  .batik-strip{
+    height:10px;
+    width:100%;
+    background:
+      repeating-linear-gradient(135deg,
+        var(--gold) 0 10px,
+        var(--red) 10px 20px,
+        var(--red-dark) 20px 30px);
+    background-size:200% 100%;
+  }
+  .batik-strip.top{border-radius:0 0 4px 4px;}
+  .batik-strip.bottom{border-radius:4px 4px 0 0;}
+
+  /* ---------- app shell ---------- */
+  #app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:0 0 60px rgba(74,6,15,0.10);position:relative;display:flex;flex-direction:column;}
+  .screen{display:none;flex-direction:column;flex:1;animation:fadeIn .35s ease;}
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .brandbar{
+    background:linear-gradient(135deg, var(--red) 0%, var(--red-dark) 55%, var(--red-deep) 100%);
+    color:var(--white);
+    padding:18px 22px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .brandbar::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px; width:160px; height:160px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(212,175,55,0.35), transparent 70%);
+  }
+  .brandbar .logo-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+  .brandbar .logo-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;color:var(--red-deep);font-size:16px;font-family:'Poppins',sans-serif;
+    box-shadow:var(--shadow-sm);
+  }
+  .brandbar .brandname{font-size:13px;letter-spacing:.06em;font-weight:700;opacity:.92;text-transform:uppercase;}
+  .brandbar .brandname small{display:block;font-weight:400;font-size:10.5px;opacity:.75;letter-spacing:.04em;}
+
+  /* ---------- landing ---------- */
+  .hero{
+    padding:34px 26px 30px;
+    text-align:center;
+    position:relative;
+    z-index:1;
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold-light);
+    background:rgba(255,255,255,0.12);
+    padding:5px 12px;border-radius:100px;
+    margin-bottom:14px;
+    border:1px solid rgba(243,215,124,0.4);
+  }
+  .hero h1{
+    font-size:clamp(30px,8vw,40px);
+    font-weight:900;
+    line-height:1.05;
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 span{color:var(--gold-light);}
+  .hero p.sub{
+    font-size:14.5px;
+    opacity:.88;
+    max-width:340px;
+    margin:0 auto 26px;
+    line-height:1.55;
+  }
+  .egg-stage{
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 8px;
+    position:relative;
+    height:190px;
+  }
+  .egg-shadow{
+    position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+    width:120px;height:18px;border-radius:50%;
+    background:radial-gradient(ellipse, rgba(0,0,0,0.28), transparent 70%);
+  }
+  .landing-cta{
+    margin-top:20px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:none;border-radius:100px;
+    padding:16px 30px;
+    font-size:15.5px;font-weight:700;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    width:100%;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    color:var(--red-deep);
+    box-shadow:0 10px 24px rgba(0,0,0,0.22);
+  }
+  .btn-primary:active{transform:scale(.97);}
+  .btn-primary:hover{filter:brightness(1.04);}
+  .btn-ghost{
+    background:transparent;
+    border:1.5px solid rgba(255,255,255,0.55);
+    color:var(--white);
+  }
+  .btn-outline-red{
+    background:transparent;border:1.5px solid var(--red);color:var(--red);
+  }
+  .btn-secondary{
+    background:var(--gold-soft);color:var(--red-deep);
+  }
+  .btn:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.3);}
+  .btn-sm{padding:9px 16px;font-size:13px;width:auto;}
+  .btn-block{width:100%;}
+
+  .admin-link{
+    text-align:center;padding:14px;font-size:12px;color:var(--ink-soft);
+  }
+  .admin-link a{color:var(--ink-soft);text-decoration:underline;cursor:pointer;}
+
+  /* ---------- form ---------- */
+  .body-pad{padding:26px 24px 30px;flex:1;}
+  .step-label{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+  .screen-title{font-size:22px;font-weight:800;margin:0 0 6px;color:var(--ink);}
+  .screen-desc{font-size:13.5px;color:var(--ink-soft);margin:0 0 22px;line-height:1.5;}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+  .field label .req{color:var(--red);}
+  .field label .opt{color:var(--ink-soft);font-weight:400;font-size:11.5px;}
+  .field input, .field select, .field textarea{
+    width:100%;padding:13px 14px;border-radius:12px;
+    border:1.5px solid #EBD9C8;
+    background:var(--white);
+    font-size:14.5px;color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:var(--red);
+    box-shadow:0 0 0 3px rgba(200,16,46,0.12);
+  }
+  .field .hint{font-size:11.5px;color:var(--ink-soft);margin-top:5px;}
+  .field .err{font-size:11.5px;color:var(--danger);margin-top:5px;display:none;font-weight:600;}
+  .field.has-error input, .field.has-error select{border-color:var(--danger);}
+  .field.has-error .err{display:block;}
+
+  .alert{
+    border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:16px;line-height:1.5;
+  }
+  .alert-warn{background:#FFF3E0;color:var(--warn);border:1px solid #F6D9A6;}
+  .alert-danger{background:#FDEAEC;color:var(--danger);border:1px solid #F5C0C8;}
+  .alert-info{background:var(--gold-soft);color:var(--red-dark);border:1px solid #ECD9A0;}
+
+  /* ---------- game screen ---------- */
+  .game-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 34px;text-align:center;}
+  .game-hello{font-size:13px;color:var(--ink-soft);margin-bottom:2px;}
+  .game-hello b{color:var(--ink);}
+  .game-title{font-size:20px;font-weight:800;margin:2px 0 26px;}
+  .egg-arena{position:relative;height:260px;width:260px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+  .egg-svg-wrap{position:relative;width:180px;height:220px;transform-origin:50% 80%;}
+  .egg-svg-wrap.shaking{animation:eggShake .5s ease-in-out infinite;}
+  @keyframes eggShake{
+    0%,100%{transform:rotate(0deg) translateX(0);}
+    20%{transform:rotate(-6deg) translateX(-4px);}
+    40%{transform:rotate(5deg) translateX(4px);}
+    60%{transform:rotate(-4deg) translateX(-3px);}
+    80%{transform:rotate(4deg) translateX(3px);}
+  }
+  .egg-svg-wrap.cracking .egg-top{animation:crackTop .55s ease-in forwards;}
+  .egg-svg-wrap.cracking .egg-bottom{animation:crackBottom .55s ease-in forwards;}
+  .egg-svg-wrap.cracking .egg-whole{opacity:0;transition:opacity .1s;}
+  @keyframes crackTop{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(-90px) rotate(-18deg) translateX(-30px);opacity:0;}
+  }
+  @keyframes crackBottom{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(90px) rotate(14deg) translateX(24px);opacity:0;}
+  }
+  .crack-line{opacity:0;}
+  .egg-svg-wrap.shaking .crack-line{opacity:0;}
+  .spark{position:absolute;pointer-events:none;opacity:0;}
+  .egg-svg-wrap.cracking .spark{animation:sparkPop .6s ease-out forwards;}
+  @keyframes sparkPop{
+    0%{opacity:1;transform:scale(0.3) translateY(0);}
+    100%{opacity:0;transform:scale(1.3) translateY(-40px);}
+  }
+  .break-btn{
+    margin-top:14px;
+    max-width:280px;
+  }
+  .game-note{font-size:11.5px;color:var(--ink-soft);margin-top:16px;max-width:280px;line-height:1.5;}
+  .confetti-piece{position:fixed;top:-10px;width:8px;height:14px;opacity:.95;z-index:50;pointer-events:none;}
+
+  /* ---------- result screen ---------- */
+  .result-wrap{flex:1;padding:0 0 30px;display:flex;flex-direction:column;}
+  .result-hero{
+    background:linear-gradient(160deg, var(--red) 0%, var(--red-dark) 60%, var(--red-deep) 100%);
+    color:var(--white);
+    padding:30px 24px 60px;
+    text-align:center;
+    position:relative;
+  }
+  .result-hero h2{font-size:26px;font-weight:900;margin:8px 0 4px;}
+  .result-hero .sub{font-size:13px;opacity:.85;}
+  .reward-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin:-42px 22px 0;
+    padding:24px 22px;
+    position:relative;
+    text-align:center;
+    border:1px solid #F1E2C9;
+  }
+  .reward-icon{
+    width:88px;height:88px;border-radius:22px;
+    margin:0 auto 14px;
+    background:linear-gradient(135deg, var(--gold-light), var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    font-size:40px;
+    box-shadow:var(--shadow-sm);
+  }
+  .reward-name{font-size:19px;font-weight:800;color:var(--ink);margin:0 0 2px;}
+  .reward-desc{font-size:12.5px;color:var(--ink-soft);margin-bottom:18px;}
+  .divider-dash{border-top:1.5px dashed #E7D3B8;margin:16px 0;position:relative;}
+  .divider-dash::before, .divider-dash::after{
+    content:"";position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--cream);
+  }
+  .divider-dash::before{left:-40px;}
+  .divider-dash::after{right:-40px;}
+  .info-grid{text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;font-size:13px;margin-bottom:6px;}
+  .info-grid .lbl{color:var(--ink-soft);font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
+  .info-grid .val{font-weight:600;color:var(--ink);}
+  .winner-code-box{
+    margin-top:16px;background:var(--gold-soft);border:1.5px dashed var(--gold);
+    border-radius:14px;padding:14px;text-align:center;
+  }
+  .winner-code-box .lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--red-dark);text-transform:uppercase;}
+  .winner-code-box .code{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;color:var(--red-deep);letter-spacing:.03em;margin-top:4px;}
+  .result-actions{padding:22px 22px 0;}
+  .instr-box{margin:16px 22px 0;font-size:12px;color:var(--ink-soft);background:#FBF6EC;border-radius:12px;padding:12px 14px;line-height:1.55;}
+
+  /* ---------- admin ---------- */
+  .admin-body{padding:30px 26px;flex:1;}
+  .admin-header{padding:20px 24px;background:var(--ink);color:var(--white);display:flex;align-items:center;justify-content:space-between;}
+  .admin-header .t{font-weight:800;font-size:15px;}
+  .admin-tabs{display:flex;gap:6px;padding:12px 16px 0;overflow-x:auto;background:var(--white);border-bottom:1px solid #F0E2CC;position:sticky;top:0;z-index:5;}
+  .admin-tab{
+    padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--ink-soft);
+    border-bottom:2.5px solid transparent;white-space:nowrap;cursor:pointer;
+  }
+  .admin-tab.active{color:var(--red);border-color:var(--red);}
+  .admin-panel{display:none;padding:20px;}
+  .admin-panel.active{display:block;}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+  .stat-card{background:var(--white);border:1px solid #F0E2CC;border-radius:14px;padding:14px;box-shadow:var(--shadow-sm);}
+  .stat-card .n{font-size:22px;font-weight:800;color:var(--red);font-family:'Poppins',sans-serif;}
+  .stat-card .l{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+
+  .section-title{font-size:14px;font-weight:800;margin:22px 0 10px;color:var(--ink);}
+  .card{background:var(--white);border:1px solid #F0E2CC;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .reward-row{display:flex;gap:12px;align-items:center;}
+  .reward-row .thumb{width:44px;height:44px;border-radius:10px;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+  .reward-row .thumb img{width:100%;height:100%;object-fit:cover;}
+  .reward-row .meta{flex:1;min-width:0;}
+  .reward-row .meta .nm{font-weight:700;font-size:13.5px;}
+  .reward-row .meta .sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
+  .pill-active{background:#E4F6EA;color:var(--ok);}
+  .pill-inactive{background:#F1E5E5;color:#9A5A5A;}
+  .pill-unclaimed{background:#FFF3E0;color:var(--warn);}
+  .pill-claimed{background:#E4F6EA;color:var(--ok);}
+  .row-actions{display:flex;gap:8px;margin-top:10px;}
+
+  table.records{width:100%;border-collapse:collapse;font-size:12px;}
+  table.records th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);padding:8px 6px;border-bottom:1.5px solid #F0E2CC;white-space:nowrap;}
+  table.records td{padding:9px 6px;border-bottom:1px solid #F5EBDA;white-space:nowrap;}
+  .table-scroll{overflow-x:auto;border:1px solid #F0E2CC;border-radius:12px;margin-top:10px;}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+  .toolbar input, .toolbar select{flex:1;min-width:120px;padding:10px 12px;border-radius:10px;border:1.5px solid #EBD9C8;font-size:12.5px;}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(42,16,19,0.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-backdrop.active{display:flex;}
+  .modal{background:var(--white);border-radius:16px;padding:22px;max-width:380px;width:100%;box-shadow:var(--shadow);}
+  .modal h3{margin:0 0 6px;font-size:16px;}
+  .modal p{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+  .modal .field{margin-bottom:12px;}
+  .modal-actions{display:flex;gap:10px;margin-top:6px;}
+
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--white);padding:12px 20px;border-radius:100px;
+    font-size:12.5px;font-weight:600;box-shadow:var(--shadow);z-index:200;
+    opacity:0;transition:opacity .25s ease, transform .25s ease;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  .back-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .icon-btn{background:none;border:none;font-size:18px;color:var(--ink-soft);padding:4px;}
+
+  .switch{position:relative;display:inline-block;width:38px;height:22px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider-tog{position:absolute;cursor:pointer;inset:0;background-color:#DCC9AE;transition:.2s;border-radius:100px;}
+  .slider-tog:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:white;transition:.2s;border-radius:50%;}
+  input:checked + .slider-tog{background-color:var(--ok);}
+  input:checked + .slider-tog:before{transform:translateX(16px);}
+
+  .footer-note{text-align:center;font-size:10.5px;color:#C9AFAF;padding:16px;}
+
+  @media (min-width:540px){
+    body{background-attachment:fixed;}
+    #app{margin-top:0;min-height:100vh;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= LANDING ================= -->
+  <section class="screen active" id="screen-landing">
+    <div class="batik-strip top"></div>
+    <div class="brandbar">
+      <div class="logo-row">
+        <div class="logo-mark">S</div>
+        <div class="brandname">Sinarmas Multifinance<small>Program Marketing &amp; Dealer</small></div>
+      </div>
+      <div class="hero">
+        <span class="eyebrow">Program Berhadiah</span>
+        <h1>Pecah <span>Telur</span><br>Menangkan Hadiahnya</h1>
+        <p class="sub">Isi datamu, pecahkan satu telur virtual, dan lihat hadiah kejutan yang kamu menangkan hari ini.</p>
+        <div class="egg-stage">
+          <div class="egg-shadow"></div>
+          <svg width="150" height="180" viewBox="0 0 150 180" fill="none">
+            <defs>
+              <linearGradient id="eggGradLand" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FBEFC7"/>
+                <stop offset="55%" stop-color="#F3D77C"/>
+                <stop offset="100%" stop-color="#D4AF37"/>
+              </linearGradient>
+            </defs>
+            <path d="M75 6C110 6 138 66 138 112C138 150 110 174 75 174C40 174 12 150 12 112C12 66 40 6 75 6Z" fill="url(#eggGradLand)" stroke="#7A0C1E" stroke-width="2.5"/>
+            <path d="M40 60 L58 60 L48 82 L64 82 L44 118" stroke="#C8102E" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+            <circle cx="100" cy="55" r="4" fill="#C8102E" opacity="0.55"/>
+            <circle cx="108" cy="90" r="3" fill="#C8102E" opacity="0.45"/>
+            <circle cx="94" cy="120" r="3.5" fill="#C8102E" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="landing-cta">
+          <button class="btn btn-primary" id="btn-start">🥚 Mulai Main</button>
+        </div>
+      </div>
+    </div>
+    <div class="body-pad" style="padding-top:20px;">
+      <div class="alert alert-info" id="landing-period-note" style="display:none;"></div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;text-align:center;padding:14px 8px;background:var(--gold-soft);border-radius:14px;">
+          <div style="font-size:20px;">📝</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;font-weight:600;">Isi Data</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:14px 8px;background:var(--gold-soft);border-radius:14px;">
+          <div style="font-size:20px;">🥚</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;font-weight:600;">Pecahkan Telur</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:14px 8px;background:var(--gold-soft);border-radius:14px;">
+          <div style="font-size:20px;">🎁</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:4px;font-weight:600;">Menang Hadiah</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="admin-link">Panitia / PIC program? <a id="link-admin">Masuk sebagai Admin</a></div>
+    <div class="batik-strip bottom"></div>
+  </section>
+
+  <!-- ================= FORM PESERTA ================= -->
+  <section class="screen" id="screen-form">
+    <div class="brandbar" style="padding:16px 22px;">
+      <div class="back-row">
+        <button class="icon-btn" id="btn-back-form">←</button>
+        <div class="logo-row"><div class="logo-mark" style="width:26px;height:26px;font-size:13px;">S</div><div class="brandname" style="font-size:11.5px;">Sinarmas Multifinance</div></div>
+      </div>
+    </div>
+    <div class="body-pad">
+      <div class="step-label">Langkah 1 dari 2</div>
+      <h2 class="screen-title">Data Peserta</h2>
+      <p class="screen-desc">Lengkapi data berikut sebelum memecahkan telur. Pastikan data sesuai identitas kamu untuk keperluan verifikasi hadiah.</p>
+
+      <div class="alert alert-danger" id="form-alert" style="display:none;"></div>
+
+      <div class="field" id="f-nama">
+        <label>Nama Lengkap <span class="req">*</span></label>
+        <input type="text" id="input-nama" placeholder="Contoh: Budi Santoso" autocomplete="name">
+        <div class="err">Nama wajib diisi.</div>
+      </div>
+      <div class="field" id="f-dealer">
+        <label>Nama Dealer <span class="req">*</span></label>
+        <input type="text" id="input-dealer" placeholder="Contoh: Dealer Mobil Jaya">
+        <div class="err">Nama dealer wajib diisi.</div>
+      </div>
+      <div class="field" id="f-cabang">
+        <label>Cabang <span class="req">*</span></label>
+        <input type="text" id="input-cabang" placeholder="Contoh: Cabang Makassar">
+        <div class="err">Cabang wajib diisi.</div>
+      </div>
+      <div class="field" id="f-hp">
+        <label>No. HP <span class="opt">(disarankan — WhatsApp aktif)</span></label>
+        <input type="tel" id="input-hp" placeholder="08xxxxxxxxxx" autocomplete="tel">
+        <div class="hint">Digunakan untuk mencegah main berulang kali dan verifikasi hadiah.</div>
+      </div>
+      <div class="field" id="f-promo">
+        <label>Kode Peserta / Promo <span class="opt">(opsional)</span></label>
+        <input type="text" id="input-promo" placeholder="Jika ada kode dari panitia">
+      </div>
+
+      <button class="btn btn-primary" id="btn-submit-form" style="margin-top:8px;">Lanjut ke Telur →</button>
+    </div>
+  </section>
+
+  <!-- ================= GAME ================= -->
+  <section class="screen" id="screen-game">
+    <div class="batik-strip top"></div>
+    <div class="game-wrap">
+      <div class="game-hello">Halo, <b id="game-nama-peserta">Peserta</b> 👋</div>
+      <div class="game-title">Ketuk telur untuk memecahkannya!</div>
+      <div class="egg-arena" id="egg-arena">
+        <div class="egg-shadow"></div>
+        <div class="egg-svg-wrap" id="egg-svg-wrap">
+          <svg class="egg-whole" width="180" height="220" viewBox="0 0 150 180" fill="none" style="position:absolute;left:0;top:0;">
+            <defs>
+              <linearGradient id="eggGradGame" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FBEFC7"/>
+                <stop offset="55%" stop-color="#F3D77C"/>
+                <stop offset="100%" stop-color="#D4AF37"/>
+              </linearGradient>
+            </defs>
+            <path d="M75 6C110 6 138 66 138 112C138 150 110 174 75 174C40 174 12 150 12 112C12 66 40 6 75 6Z" fill="url(#eggGradGame)" stroke="#7A0C1E" stroke-width="2.5"/>
+            <path d="M40 60 L58 60 L48 82 L64 82 L44 118" stroke="#C8102E" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+            <circle cx="100" cy="55" r="4" fill="#C8102E" opacity="0.55"/>
+            <circle cx="108" cy="90" r="3" fill="#C8102E" opacity="0.45"/>
+            <circle cx="94" cy="120" r="3.5" fill="#C8102E" opacity="0.5"/>
+          </svg>
+          <svg class="egg-top" width="180" height="220" viewBox="0 0 150 180" fill="none" style="position:absolute;left:0;top:0;">
+            <defs><clipPath id="clipTop"><rect x="0" y="0" width="150" height="90"/></clipPath></defs>
+            <g clip-path="url(#clipTop)">
+              <path d="M75 6C110 6 138 66 138 112C138 150 110 174 75 174C40 174 12 150 12 112C12 66 40 6 75 6Z" fill="url(#eggGradGame)" stroke="#7A0C1E" stroke-width="2.5"/>
+            </g>
+            <path d="M20 92 L58 84 L70 100 L92 80 L130 90" stroke="#7A0C1E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg class="egg-bottom" width="180" height="220" viewBox="0 0 150 180" fill="none" style="position:absolute;left:0;top:0;">
+            <defs><clipPath id="clipBottom"><rect x="0" y="90" width="150" height="90"/></clipPath></defs>
+            <g clip-path="url(#clipBottom)">
+              <path d="M75 6C110 6 138 66 138 112C138 150 110 174 75 174C40 174 12 150 12 112C12 66 40 6 75 6Z" fill="url(#eggGradGame)" stroke="#7A0C1E" stroke-width="2.5"/>
+            </g>
+            <path d="M20 92 L58 84 L70 100 L92 80 L130 90" stroke="#7A0C1E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="spark" style="left:20px;top:60px;font-size:22px;">✨</div>
+          <div class="spark" style="right:14px;top:70px;font-size:18px;animation-delay:.05s;">✨</div>
+          <div class="spark" style="left:50%;top:10px;font-size:20px;animation-delay:.1s;">⭐</div>
+        </div>
+      </div>
+      <button class="btn btn-primary break-btn" id="btn-break">Pecahkan Telur!</button>
+      <p class="game-note">Satu peserta hanya berkesempatan bermain sesuai ketentuan program. Hadiah ditentukan otomatis oleh sistem saat kamu menekan tombol.</p>
+    </div>
+    <div class="batik-strip bottom"></div>
+  </section>
+
+  <!-- ================= RESULT ================= -->
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-hero">
+        <div style="font-size:34px;">🎉</div>
+        <h2>Selamat!</h2>
+        <div class="sub">Kamu berhasil memenangkan hadiah</div>
+      </div>
+      <div class="reward-card">
+        <div class="reward-icon" id="result-reward-icon">🎁</div>
+        <div class="reward-name" id="result-reward-name">Nama Hadiah</div>
+        <div class="reward-desc" id="result-reward-desc">Keterangan hadiah</div>
+        <div class="divider-dash"></div>
+        <div class="info-grid">
+          <div><div class="lbl">Nama Peserta</div><div class="val" id="result-nama">-</div></div>
+          <div><div class="lbl">Dealer</div><div class="val" id="result-dealer">-</div></div>
+          <div><div class="lbl">Cabang</div><div class="val" id="result-cabang">-</div></div>
+          <div><div class="lbl">Tanggal</div><div class="val" id="result-tanggal">-</div></div>
+        </div>
+        <div class="winner-code-box">
+          <div class="lbl">Winner Code</div>
+          <div class="code" id="result-code">PET-000000-00000</div>
+        </div>
+      </div>
+      <div class="instr-box">
+        📸 <b>Simpan tangkapan layar (screenshot) halaman ini</b> sebagai bukti. Tunjukkan Winner Code di atas kepada panitia/PIC saat penukaran hadiah. Validasi utama dilakukan melalui Winner Code pada sistem panitia.
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-secondary" id="btn-result-home">Kembali ke Beranda</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ADMIN LOGIN ================= -->
+  <section class="screen" id="screen-admin-login">
+    <div class="brandbar" style="padding:16px 22px;">
+      <div class="back-row">
+        <button class="icon-btn" id="btn-back-adminlogin">←</button>
+        <div class="logo-row"><div class="logo-mark" style="width:26px;height:26px;font-size:13px;">S</div><div class="brandname" style="font-size:11.5px;">Admin Panel</div></div>
+      </div>
+    </div>
+    <div class="body-pad">
+      <h2 class="screen-title">Masuk Admin</h2>
+      <p class="screen-desc">Login memakai akun Firebase Authentication yang sudah dibuat di Firebase Console (lihat SETUP-FIREBASE.md).</p>
+      <div class="alert alert-danger" id="admin-login-alert" style="display:none;">Email atau password salah.</div>
+      <div class="field">
+        <label>Email Admin</label>
+        <input type="email" id="input-admin-email" placeholder="admin@email.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="input-admin-pass" placeholder="Masukkan password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="btn-admin-login">Masuk</button>
+      <p class="game-note" style="margin-top:16px;">Belum punya akun admin? Buat lewat Firebase Console → Authentication → Add user, sesuai panduan SETUP-FIREBASE.md.</p>
+    </div>
+  </section>
+
+  <!-- ================= FIREBASE CONFIG GATE ================= -->
+  <section class="screen" id="screen-config-gate">
+    <div class="brandbar" style="padding:16px 22px;">
+      <div class="logo-row"><div class="logo-mark" style="width:26px;height:26px;font-size:13px;">S</div><div class="brandname" style="font-size:11.5px;">Setup Diperlukan</div></div>
+    </div>
+    <div class="body-pad">
+      <h2 class="screen-title">Firebase belum dikonfigurasi</h2>
+      <p class="screen-desc">File ini masih memakai konfigurasi Firebase placeholder. Buka file HTML ini di editor, cari bagian <code>firebaseConfig</code> di dalam tag <code>&lt;script&gt;</code>, dan isi dengan konfigurasi project Firebase kamu sendiri.</p>
+      <div class="alert alert-info">Ikuti langkah-langkah lengkap di file <b>SETUP-FIREBASE.md</b> yang disertakan bersama file ini: buat project Firebase, aktifkan Firestore + Authentication, salin konfigurasi web app, lalu tempel di sini.</div>
+      <p class="screen-desc">Setelah <code>firebaseConfig</code> diisi dan file disimpan ulang, muat ulang halaman ini.</p>
+    </div>
+  </section>
+
+  <!-- ================= ADMIN DASHBOARD ================= -->
+  <section class="screen" id="screen-admin">
+    <div class="admin-header">
+      <div class="t">🥚 Pecah Telur — Admin</div>
+      <button class="btn-sm btn" style="background:rgba(255,255,255,.12);color:#fff;border-radius:100px;" id="btn-admin-logout">Keluar</button>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-tab="overview">Overview</div>
+      <div class="admin-tab" data-tab="rewards">Hadiah</div>
+      <div class="admin-tab" data-tab="records">Peserta &amp; Pemenang</div>
+      <div class="admin-tab" data-tab="settings">Pengaturan</div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="admin-panel active" id="panel-overview">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="n" id="st-participants">0</div><div class="l">Total Peserta</div></div>
+        <div class="stat-card"><div class="n" id="st-plays">0</div><div class="l">Total Play</div></div>
+        <div class="stat-card"><div class="n" id="st-winners">0</div><div class="l">Total Pemenang</div></div>
+        <div class="stat-card"><div class="n" id="st-rewards-out">0</div><div class="l">Hadiah Keluar</div></div>
+        <div class="stat-card"><div class="n" id="st-claimed">0</div><div class="l">Hadiah Claimed</div></div>
+        <div class="stat-card"><div class="n" id="st-unclaimed">0</div><div class="l">Hadiah Unclaimed</div></div>
+      </div>
+      <div class="section-title">Sisa Stok Hadiah</div>
+      <div id="overview-stock-list"></div>
+      <div class="section-title">Ringkasan per Dealer</div>
+      <div class="table-scroll"><table class="records" id="tbl-by-dealer"><thead><tr><th>Dealer</th><th>Play</th><th>Menang</th></tr></thead><tbody></tbody></table></div>
+      <div class="section-title">Ringkasan per Cabang</div>
+      <div class="table-scroll"><table class="records" id="tbl-by-cabang"><thead><tr><th>Cabang</th><th>Play</th><th>Menang</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <!-- REWARDS -->
+    <div class="admin-panel" id="panel-rewards">
+      <button class="btn btn-primary btn-sm" id="btn-add-reward" style="margin-bottom:14px;">+ Tambah Hadiah</button>
+      <div id="rewards-list"></div>
+    </div>
+
+    <!-- RECORDS -->
+    <div class="admin-panel" id="panel-records">
+      <div class="toolbar">
+        <input type="text" id="rec-search" placeholder="Cari nama / dealer / cabang / kode / hadiah...">
+      </div>
+      <div class="toolbar" style="margin-top:8px;">
+        <select id="rec-filter-status">
+          <option value="">Semua Status Klaim</option>
+          <option value="UNCLAIMED">UNCLAIMED</option>
+          <option value="CLAIMED">CLAIMED</option>
+        </select>
+        <input type="date" id="rec-filter-date">
+        <button class="btn btn-outline-red btn-sm" id="btn-export-csv">⬇ Export CSV</button>
+      </div>
+      <div class="table-scroll">
+        <table class="records" id="tbl-records">
+          <thead><tr>
+            <th>Waktu</th><th>Nama</th><th>Dealer</th><th>Cabang</th><th>Hadiah</th><th>Kode</th><th>Status</th><th>Aksi</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="section-title">Verifikasi Kode Manual</div>
+      <div class="card">
+        <div class="toolbar">
+          <input type="text" id="verify-code-input" placeholder="Masukkan Winner Code (PET-...)">
+          <button class="btn btn-secondary btn-sm" id="btn-verify-code">Cek</button>
+        </div>
+        <div id="verify-result" style="margin-top:10px;font-size:12.5px;"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="admin-panel" id="panel-settings">
+      <div class="card">
+        <div class="section-title" style="margin-top:0;">Program</div>
+        <div class="field"><label>Nama Program</label><input type="text" id="set-program-name"></div>
+        <div class="field"><label>Periode Mulai</label><input type="date" id="set-period-start"></div>
+        <div class="field"><label>Periode Selesai</label><input type="date" id="set-period-end"></div>
+        <div class="field" style="display:flex;align-items:center;justify-content:space-between;">
+          <label style="margin:0;">Program Aktif</label>
+          <label class="switch"><input type="checkbox" id="set-active"><span class="slider-tog"></span></label>
+        </div>
+        <div class="field"><label>Maksimal Main per Peserta</label><input type="number" min="1" id="set-maxplay"></div>
+        <div class="field"><label>Disclaimer</label><textarea id="set-disclaimer" rows="3"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="section-title" style="margin-top:0;">Keamanan Admin</div>
+        <p style="font-size:12px;color:var(--ink-soft);margin:0;">Akun admin dikelola lewat Firebase Authentication (bukan lagi password tunggal di sini). Untuk menambah admin baru atau mengganti password, buka Firebase Console → Authentication → Users.</p>
+      </div>
+      <button class="btn btn-primary" id="btn-save-settings">Simpan Pengaturan</button>
+
+      <div class="section-title">Data &amp; Reset</div>
+      <div class="card">
+        <p style="font-size:12px;color:var(--ink-soft);margin:0 0 10px;">Reset seluruh data peserta, pemenang, dan stok hadiah ke kondisi awal. Tindakan ini tidak dapat dibatalkan.</p>
+        <button class="btn btn-outline-red btn-sm" id="btn-reset-data">Reset Semua Data</button>
+      </div>
+    </div>
+    <div class="footer-note">Pecah Telur · Sinarmas Multifinance · MVP Demo</div>
+  </section>
+
+</div>
+
+<!-- ===== Modal: Reward Editor ===== -->
+<div class="modal-backdrop" id="modal-reward">
+  <div class="modal">
+    <h3 id="modal-reward-title">Tambah Hadiah</h3>
+    <p>Atur detail hadiah, stok, dan bobot (weight) kemunculan.</p>
+    <input type="hidden" id="rw-id">
+    <div class="field"><label>Nama Hadiah</label><input type="text" id="rw-name" placeholder="Contoh: Voucher Rp100.000"></div>
+    <div class="field"><label>Emoji / Ikon</label><input type="text" id="rw-icon" placeholder="🎁" maxlength="4"></div>
+    <div class="field"><label>URL Gambar Hadiah <span class="opt">(opsional)</span></label><input type="text" id="rw-image" placeholder="https://..."></div>
+    <div class="field"><label>Keterangan</label><input type="text" id="rw-desc" placeholder="Deskripsi singkat hadiah"></div>
+    <div style="display:flex;gap:10px;">
+      <div class="field" style="flex:1;"><label>Stok</label><input type="number" min="0" id="rw-stock"></div>
+      <div class="field" style="flex:1;"><label>Weight</label><input type="number" min="1" id="rw-weight"></div>
+    </div>
+    <div class="field" style="display:flex;align-items:center;justify-content:space-between;">
+      <label style="margin:0;">Status Aktif</label>
+      <label class="switch"><input type="checkbox" id="rw-active" checked><span class="slider-tog"></span></label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-block" id="btn-cancel-reward">Batal</button>
+      <button class="btn btn-primary btn-block" id="btn-save-reward">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modal: Claim Verify ===== -->
+<div class="modal-backdrop" id="modal-claim">
+  <div class="modal">
+    <h3>Verifikasi &amp; Klaim Hadiah</h3>
+    <p id="claim-modal-desc">Konfirmasi penukaran hadiah untuk kode ini.</p>
+    <div class="field"><label>Nama PIC yang Memverifikasi</label><input type="text" id="claim-pic-name" placeholder="Nama panitia/PIC"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-block" id="btn-cancel-claim">Batal</button>
+      <button class="btn btn-primary btn-block" id="btn-confirm-claim">Tandai CLAIMED</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc,
+  collection, query, where, runTransaction
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signInAnonymously,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+/* =========================================================
+   FIREBASE CONFIG
+   Ganti seluruh object di bawah ini dengan konfigurasi Firebase
+   project kamu sendiri (Firebase Console → Project settings →
+   Your apps → SDK setup and configuration). Lihat SETUP-FIREBASE.md.
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const CONFIG_NOT_SET = firebaseConfig.apiKey === "YOUR_API_KEY";
+
+let app, db, auth;
+if(!CONFIG_NOT_SET){
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  auth = getAuth(app);
+}
+
+/* =========================================================
+   DATA LAYER — Firestore
+   Koleksi:
+   - rewards/{rewardId}      : dokumen hadiah (stok, weight, dst)
+   - records/{winnerCode}    : dokumen transaksi permainan.
+                                Doc ID = winner code itu sendiri,
+                                sehingga keunikan kode dijamin oleh
+                                Firestore (tidak bisa dua record
+                                pakai ID/kode yang sama).
+   - settings/main           : dokumen pengaturan program.
+   Aturan keamanan (Firestore Security Rules) ada di SETUP-FIREBASE.md
+   — itu yang benar-benar mencegah manipulasi stok/hadiah dari
+   browser, bukan kode JS di sini.
+   ========================================================= */
+const DEFAULT_REWARDS = [
+  {id:'r1', name:'Voucher Rp500.000', icon:'💳', image:'', desc:'Voucher belanja senilai Rp500.000', stock:2, weight:1, active:true},
+  {id:'r2', name:'Voucher Rp100.000', icon:'💵', image:'', desc:'Voucher belanja senilai Rp100.000', stock:10, weight:5, active:true},
+  {id:'r3', name:'Merchandise', icon:'🎽', image:'', desc:'Merchandise eksklusif Sinarmas Multifinance', stock:30, weight:15, active:true},
+  {id:'r4', name:'Voucher Rp50.000', icon:'🎫', image:'', desc:'Voucher belanja senilai Rp50.000', stock:50, weight:30, active:true},
+  {id:'r5', name:'Hadiah Hiburan', icon:'🎉', image:'', desc:'Hadiah hiburan menarik', stock:100, weight:49, active:true},
+];
+const DEFAULT_SETTINGS = {
+  programName:'Pecah Telur', periodStart:'', periodEnd:'', active:true,
+  maxPlay:1, disclaimer:'Hadiah tidak dapat diuangkan dan tunduk pada syarat & ketentuan program.'
+};
+
+let rewards = [];
+let records = [];
+let settings = {...DEFAULT_SETTINGS};
+let isAdmin = false;
+
+async function fetchRewards(){
+  const snap = await getDocs(collection(db,'rewards'));
+  if(snap.empty){
+    for(const r of DEFAULT_REWARDS){ await setDoc(doc(db,'rewards',r.id), r); }
+    return DEFAULT_REWARDS.map(r=>({...r}));
+  }
+  return snap.docs.map(d=>({id:d.id, ...d.data()}));
+}
+async function fetchRecords(){
+  const snap = await getDocs(collection(db,'records'));
+  return snap.docs.map(d=>({id:d.id, code:d.id, ...d.data()}));
+}
+async function fetchSettings(){
+  const ref = doc(db,'settings','main');
+  const snap = await getDoc(ref);
+  if(!snap.exists()){ await setDoc(ref, DEFAULT_SETTINGS); return {...DEFAULT_SETTINGS}; }
+  return snap.data();
+}
+async function saveSettings(newSettings){
+  await setDoc(doc(db,'settings','main'), newSettings, {merge:true});
+}
+
+async function loadAll(){
+  rewards = await fetchRewards();
+  records = await fetchRecords();
+  settings = await fetchSettings();
+}
+
+/* =========================================================
+   UTIL
+   ========================================================= */
+function $(sel){ return document.querySelector(sel); }
+function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
+function showScreen(id){
+  $all('.screen').forEach(s=>s.classList.remove('active'));
+  $('#'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._tm); toast._tm = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+function fmtDate(d){
+  const dt = new Date(d);
+  return dt.toLocaleString('id-ID', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function pad(n,len){ return String(n).padStart(len,'0'); }
+
+function secureRandomInt(maxExclusive){
+  const arr = new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  return arr[0] % maxExclusive;
+}
+
+function weightedPick(activeRewards){
+  const totalWeight = activeRewards.reduce((s,r)=>s+Number(r.weight||0),0);
+  if(totalWeight<=0) return null;
+  let roll = secureRandomInt(totalWeight);
+  for(const r of activeRewards){
+    const w = Number(r.weight||0);
+    if(roll < w) return r;
+    roll -= w;
+  }
+  return activeRewards[activeRewards.length-1];
+}
+
+function genWinnerCode(existingCodes){
+  const now = new Date();
+  const ymd = pad(now.getFullYear()%100,2)+pad(now.getMonth()+1,2)+pad(now.getDate(),2);
+  let code, tries=0;
+  do{
+    const num = secureRandomInt(100000);
+    code = 'PET-'+ymd+'-'+pad(num,5);
+    tries++;
+  }while(existingCodes.has(code) && tries<50);
+  return code;
+}
+
+/* =========================================================
+   ELIGIBILITY / ANTI-CHEAT (client-side approximation)
+   ========================================================= */
+function findPriorPlays(nama, dealer, cabang, hp){
+  const normHp = (hp||'').replace(/\D/g,'');
+  return records.filter(rec=>{
+    if(normHp && rec.hp && rec.hp.replace(/\D/g,'')===normHp) return true;
+    if(!normHp){
+      return rec.nama.trim().toLowerCase()===nama.trim().toLowerCase() &&
+             rec.dealer.trim().toLowerCase()===dealer.trim().toLowerCase() &&
+             rec.cabang.trim().toLowerCase()===cabang.trim().toLowerCase();
+    }
+    return false;
+  });
+}
+
+/* =========================================================
+   STATE (current participant in flow)
+   ========================================================= */
+let currentParticipant = null;
+let currentReward = null;
+let currentWinnerCode = null;
+
+/* =========================================================
+   LANDING
+   ========================================================= */
+function renderLandingInfo(){
+  const note = $('#landing-period-note');
+  if(!settings.active){
+    note.style.display='block';
+    note.textContent = 'Program sedang tidak aktif saat ini. Silakan hubungi panitia untuk informasi lebih lanjut.';
+    $('#btn-start').disabled = true;
+  } else if(settings.periodStart && settings.periodEnd){
+    note.style.display='block';
+    note.textContent = 'Periode program: '+settings.periodStart+' s/d '+settings.periodEnd;
+    $('#btn-start').disabled = false;
+  } else {
+    note.style.display='none';
+    $('#btn-start').disabled = false;
+  }
+}
+
+$('#btn-start').addEventListener('click', ()=>{
+  $('#form-alert').style.display='none';
+  showScreen('screen-form');
+});
+$('#btn-back-form').addEventListener('click', ()=> showScreen('screen-landing'));
+$('#link-admin').addEventListener('click', ()=> showScreen('screen-admin-login'));
+$('#btn-back-adminlogin').addEventListener('click', ()=> showScreen('screen-landing'));
+
+/* =========================================================
+   FORM PESERTA
+   ========================================================= */
+function clearFormErrors(){
+  ['f-nama','f-dealer','f-cabang'].forEach(id=> $('#'+id).classList.remove('has-error'));
+  $('#form-alert').style.display='none';
+}
+
+$('#btn-submit-form').addEventListener('click', async ()=>{
+  clearFormErrors();
+  const nama = $('#input-nama').value.trim();
+  const dealer = $('#input-dealer').value.trim();
+  const cabang = $('#input-cabang').value.trim();
+  const hp = $('#input-hp').value.trim();
+  const promo = $('#input-promo').value.trim();
+
+  let valid = true;
+  if(!nama){ $('#f-nama').classList.add('has-error'); valid=false; }
+  if(!dealer){ $('#f-dealer').classList.add('has-error'); valid=false; }
+  if(!cabang){ $('#f-cabang').classList.add('has-error'); valid=false; }
+  if(!valid) return;
+
+  // refresh data terbaru sebelum cek eligibility
+  records = await fetchRecords();
+  settings = await fetchSettings();
+
+  if(!settings.active){
+    $('#form-alert').style.display='block';
+    $('#form-alert').textContent = 'Mohon maaf, program sedang tidak aktif.';
+    return;
+  }
+
+  const priorPlays = findPriorPlays(nama, dealer, cabang, hp);
+  const maxPlay = Number(settings.maxPlay||1);
+  if(priorPlays.length >= maxPlay){
+    $('#form-alert').style.display='block';
+    $('#form-alert').textContent = 'Kamu sudah mencapai batas maksimal bermain ('+maxPlay+'x) pada program ini.';
+    return;
+  }
+
+  currentParticipant = {nama, dealer, cabang, hp, promo};
+  $('#game-nama-peserta').textContent = nama;
+  resetEggVisual();
+  showScreen('screen-game');
+});
+
+/* =========================================================
+   GAME SCREEN
+   ========================================================= */
+function resetEggVisual(){
+  const wrap = $('#egg-svg-wrap');
+  wrap.classList.remove('shaking','cracking');
+  $('#btn-break').disabled = false;
+  $('#btn-break').textContent = 'Pecahkan Telur!';
+}
+
+/* Decrement stok secara atomik lewat Firestore transaction — kalau dua
+   orang menekan tombol bersamaan untuk stok hadiah terakhir, hanya satu
+   yang berhasil; yang kalah otomatis di-reroll ke hadiah lain. */
+async function decrementRewardStock(rewardId){
+  const ref = doc(db,'rewards',rewardId);
+  return await runTransaction(db, async (tx)=>{
+    const snap = await tx.get(ref);
+    if(!snap.exists()) throw new Error('reward-missing');
+    const data = snap.data();
+    if(!data.active || Number(data.stock)<=0) throw new Error('reward-out-of-stock');
+    tx.update(ref, {stock: Number(data.stock) - 1});
+    return {id: ref.id, ...data, stock: Number(data.stock)-1};
+  });
+}
+
+/* Winner code = ID dokumen di koleksi records, jadi Firestore sendiri
+   yang menjamin tidak ada dua kode yang sama (create gagal kalau ID
+   sudah dipakai). */
+async function createUniqueRecordDoc(recordData){
+  let tries = 0;
+  while(tries < 8){
+    const code = genWinnerCode(new Set());
+    const ref = doc(db,'records',code);
+    try{
+      await runTransaction(db, async (tx)=>{
+        const snap = await tx.get(ref);
+        if(snap.exists()) throw new Error('code-exists');
+        tx.set(ref, {...recordData, code});
+      });
+      return code;
+    }catch(e){ tries++; }
+  }
+  throw new Error('failed-to-generate-unique-code');
+}
+
+$('#btn-break').addEventListener('click', async ()=>{
+  const btn = $('#btn-break');
+  const wrap = $('#egg-svg-wrap');
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
+
+  // refresh rewards terbaru & tentukan hadiah SEBELUM animasi selesai
+  rewards = await fetchRewards();
+  let candidatePool = rewards.filter(r=> r.active && Number(r.stock)>0);
+  if(candidatePool.length===0){
+    toast('Maaf, stok hadiah sedang habis. Hubungi panitia.');
+    btn.disabled = false;
+    btn.textContent = 'Pecahkan Telur!';
+    return;
+  }
+
+  let confirmedReward = null;
+  let attempts = 0;
+  while(!confirmedReward && candidatePool.length>0 && attempts<6){
+    const picked = weightedPick(candidatePool);
+    try{
+      confirmedReward = await decrementRewardStock(picked.id);
+    }catch(e){
+      // stok keburu diambil orang lain di saat bersamaan — coba hadiah lain
+      candidatePool = candidatePool.filter(r=>r.id!==picked.id);
+    }
+    attempts++;
+  }
+  if(!confirmedReward){
+    toast('Maaf, stok hadiah baru saja habis. Coba lagi ya.');
+    btn.disabled = false;
+    btn.textContent = 'Pecahkan Telur!';
+    return;
+  }
+  currentReward = confirmedReward;
+
+  wrap.classList.add('shaking');
+  setTimeout(async ()=>{
+    wrap.classList.remove('shaking');
+    wrap.classList.add('cracking');
+    fireConfetti();
+
+    const recData = {
+      timestamp: new Date().toISOString(),
+      nama: currentParticipant.nama,
+      dealer: currentParticipant.dealer,
+      cabang: currentParticipant.cabang,
+      hp: currentParticipant.hp || '',
+      promo: currentParticipant.promo || '',
+      rewardId: confirmedReward.id,
+      rewardName: confirmedReward.name,
+      status: 'UNCLAIMED',
+      claimTime: '',
+      claimPic: ''
+    };
+
+    let code;
+    try{
+      code = await createUniqueRecordDoc(recData);
+    }catch(e){
+      toast('Terjadi kendala menyimpan hasil. Hubungi panitia.');
+      return;
+    }
+    currentWinnerCode = code;
+    const rec = {...recData, id:code, code};
+    records.push(rec);
+
+    setTimeout(()=>{ renderResult(rec, confirmedReward); showScreen('screen-result'); }, 700);
+  }, 1250);
+});
+
+function fireConfetti(){
+  const colors = ['#C8102E','#D4AF37','#F3D77C','#7A0C1E','#FFFFFF'];
+  for(let i=0;i<26;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = (10+Math.random()*80)+'vw';
+    el.style.background = colors[i%colors.length];
+    el.style.borderRadius = Math.random()>0.5 ? '50%':'2px';
+    el.style.transform = 'rotate('+Math.floor(Math.random()*360)+'deg)';
+    const duration = 1400+Math.random()*900;
+    el.style.transition = 'transform '+duration+'ms ease-in, top '+duration+'ms ease-in, opacity '+duration+'ms ease-in';
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.top = (90+Math.random()*10)+'vh';
+      el.style.transform += ' translateX('+(Math.random()*80-40)+'px)';
+      el.style.opacity = '0.15';
+    });
+    setTimeout(()=> el.remove(), duration+200);
+  }
+}
+
+/* =========================================================
+   RESULT SCREEN
+   ========================================================= */
+function renderResult(rec, reward){
+  $('#result-reward-icon').textContent = reward.icon || '🎁';
+  if(reward.image){
+    $('#result-reward-icon').innerHTML = '<img src="'+reward.image+'" style="width:100%;height:100%;object-fit:cover;border-radius:22px;" alt="">';
+  }
+  $('#result-reward-name').textContent = reward.name;
+  $('#result-reward-desc').textContent = reward.desc || '';
+  $('#result-nama').textContent = rec.nama;
+  $('#result-dealer').textContent = rec.dealer;
+  $('#result-cabang').textContent = rec.cabang;
+  $('#result-tanggal').textContent = fmtDate(rec.timestamp);
+  $('#result-code').textContent = rec.code;
+}
+$('#btn-result-home').addEventListener('click', ()=>{
+  $('#input-nama').value=''; $('#input-dealer').value=''; $('#input-cabang').value='';
+  $('#input-hp').value=''; $('#input-promo').value='';
+  showScreen('screen-landing');
+});
+
+/* =========================================================
+   ADMIN LOGIN — Firebase Authentication (email/password)
+   ========================================================= */
+$('#btn-admin-login').addEventListener('click', async ()=>{
+  const email = $('#input-admin-email').value.trim();
+  const pass = $('#input-admin-pass').value;
+  if(!email || !pass){ $('#admin-login-alert').style.display='block'; return; }
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+    $('#admin-login-alert').style.display='none';
+    $('#input-admin-pass').value='';
+    // enterAdmin() dipanggil otomatis lewat onAuthStateChanged di bawah
+  }catch(e){
+    $('#admin-login-alert').style.display='block';
+  }
+});
+$('#btn-admin-logout').addEventListener('click', async ()=>{
+  await signOut(auth);
+  try{ await signInAnonymously(auth); }catch(e){ console.error(e); }
+  showScreen('screen-landing');
+});
+
+async function enterAdmin(){
+  rewards = await fetchRewards();
+  records = await fetchRecords();
+  settings = await fetchSettings();
+  renderOverview();
+  renderRewardsList();
+  renderRecordsTable();
+  fillSettingsForm();
+  showScreen('screen-admin');
+}
+
+/* =========================================================
+   ADMIN TABS
+   ========================================================= */
+$all('.admin-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    $all('.admin-tab').forEach(t=>t.classList.remove('active'));
+    $all('.admin-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    $('#panel-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* =========================================================
+   ADMIN — OVERVIEW
+   ========================================================= */
+function renderOverview(){
+  const totalPlays = records.length;
+  const uniqueParticipants = new Set(records.map(r=> (r.hp && r.hp.replace(/\D/g,'')) || (r.nama+'|'+r.dealer+'|'+r.cabang).toLowerCase())).size;
+  const totalWinners = records.length; // setiap play valid = 1 reward
+  const claimed = records.filter(r=>r.status==='CLAIMED').length;
+  const unclaimed = records.filter(r=>r.status==='UNCLAIMED').length;
+
+  $('#st-participants').textContent = uniqueParticipants;
+  $('#st-plays').textContent = totalPlays;
+  $('#st-winners').textContent = totalWinners;
+  $('#st-rewards-out').textContent = totalPlays;
+  $('#st-claimed').textContent = claimed;
+  $('#st-unclaimed').textContent = unclaimed;
+
+  const stockWrap = $('#overview-stock-list');
+  stockWrap.innerHTML = rewards.map(r=>`
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="reward-row"><div class="thumb">${r.image?('<img src="'+r.image+'">'):(r.icon||'🎁')}</div>
+        <div class="meta"><div class="nm">${escapeHtml(r.name)}</div><div class="sub">Weight ${r.weight} · ${r.active?'Aktif':'Nonaktif'}</div></div>
+      </div>
+      <div style="text-align:right;"><div style="font-weight:800;font-size:16px;color:var(--red);">${r.stock}</div><div style="font-size:10px;color:var(--ink-soft);">sisa stok</div></div>
+    </div>`).join('') || '<p style="font-size:12.5px;color:var(--ink-soft);">Belum ada hadiah.</p>';
+
+  const byDealer = groupCount(records, 'dealer');
+  $('#tbl-by-dealer tbody').innerHTML = Object.entries(byDealer).map(([k,v])=>
+    `<tr><td>${escapeHtml(k)}</td><td>${v}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="3" style="color:var(--ink-soft);">Belum ada data</td></tr>';
+
+  const byCabang = groupCount(records, 'cabang');
+  $('#tbl-by-cabang tbody').innerHTML = Object.entries(byCabang).map(([k,v])=>
+    `<tr><td>${escapeHtml(k)}</td><td>${v}</td><td>${v}</td></tr>`).join('') || '<tr><td colspan="3" style="color:var(--ink-soft);">Belum ada data</td></tr>';
+}
+function groupCount(list, field){
+  const out = {};
+  list.forEach(r=>{ const k=r[field]||'-'; out[k]=(out[k]||0)+1; });
+  return out;
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* =========================================================
+   ADMIN — REWARDS CRUD
+   ========================================================= */
+function renderRewardsList(){
+  const wrap = $('#rewards-list');
+  wrap.innerHTML = rewards.map(r=>`
+    <div class="card">
+      <div class="reward-row">
+        <div class="thumb">${r.image?('<img src="'+r.image+'">'):(r.icon||'🎁')}</div>
+        <div class="meta">
+          <div class="nm">${escapeHtml(r.name)} <span class="pill ${r.active?'pill-active':'pill-inactive'}">${r.active?'Aktif':'Nonaktif'}</span></div>
+          <div class="sub">Stok: ${r.stock} · Weight: ${r.weight}</div>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-secondary btn-sm" data-edit="${r.id}">Edit</button>
+        <button class="btn btn-outline-red btn-sm" data-toggle="${r.id}">${r.active?'Nonaktifkan':'Aktifkan'}</button>
+        <button class="btn btn-outline-red btn-sm" data-del="${r.id}">Hapus</button>
+      </div>
+    </div>`).join('') || '<p style="font-size:12.5px;color:var(--ink-soft);">Belum ada hadiah. Tambahkan hadiah baru.</p>';
+
+  wrap.querySelectorAll('[data-edit]').forEach(b=> b.addEventListener('click', ()=> openRewardModal(b.dataset.edit)));
+  wrap.querySelectorAll('[data-toggle]').forEach(b=> b.addEventListener('click', ()=> toggleReward(b.dataset.toggle)));
+  wrap.querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', ()=> deleteReward(b.dataset.del)));
+}
+
+$('#btn-add-reward').addEventListener('click', ()=> openRewardModal(null));
+$('#btn-cancel-reward').addEventListener('click', ()=> $('#modal-reward').classList.remove('active'));
+
+function openRewardModal(id){
+  const r = id ? rewards.find(x=>x.id===id) : null;
+  $('#modal-reward-title').textContent = r ? 'Edit Hadiah' : 'Tambah Hadiah';
+  $('#rw-id').value = r ? r.id : '';
+  $('#rw-name').value = r ? r.name : '';
+  $('#rw-icon').value = r ? (r.icon||'🎁') : '🎁';
+  $('#rw-image').value = r ? (r.image||'') : '';
+  $('#rw-desc').value = r ? (r.desc||'') : '';
+  $('#rw-stock').value = r ? r.stock : 10;
+  $('#rw-weight').value = r ? r.weight : 10;
+  $('#rw-active').checked = r ? !!r.active : true;
+  $('#modal-reward').classList.add('active');
+}
+
+$('#btn-save-reward').addEventListener('click', async ()=>{
+  const id = $('#rw-id').value;
+  const name = $('#rw-name').value.trim();
+  if(!name){ toast('Nama hadiah wajib diisi'); return; }
+  const data = {
+    name,
+    icon: $('#rw-icon').value.trim() || '🎁',
+    image: $('#rw-image').value.trim(),
+    desc: $('#rw-desc').value.trim(),
+    stock: Math.max(0, parseInt($('#rw-stock').value)||0),
+    weight: Math.max(1, parseInt($('#rw-weight').value)||1),
+    active: $('#rw-active').checked
+  };
+  const rewardId = id || ('r_'+Date.now());
+  await setDoc(doc(db,'rewards',rewardId), data, {merge:true});
+  rewards = await fetchRewards();
+  $('#modal-reward').classList.remove('active');
+  renderRewardsList(); renderOverview();
+  toast('Hadiah disimpan');
+});
+
+async function toggleReward(id){
+  const r = rewards.find(x=>x.id===id);
+  if(r){ await updateDoc(doc(db,'rewards',id), {active: !r.active}); }
+  rewards = await fetchRewards();
+  renderRewardsList(); renderOverview();
+}
+async function deleteReward(id){
+  if(!confirm('Hapus hadiah ini?')) return;
+  await deleteDoc(doc(db,'rewards',id));
+  rewards = await fetchRewards();
+  renderRewardsList(); renderOverview();
+  toast('Hadiah dihapus');
+}
+
+/* =========================================================
+   ADMIN — RECORDS / WINNERS
+   ========================================================= */
+let claimTargetId = null;
+
+function renderRecordsTable(){
+  const q = ($('#rec-search').value||'').toLowerCase();
+  const statusF = $('#rec-filter-status').value;
+  const dateF = $('#rec-filter-date').value;
+
+  let list = [...records].reverse();
+  if(q){
+    list = list.filter(r=>
+      r.nama.toLowerCase().includes(q) || r.dealer.toLowerCase().includes(q) ||
+      r.cabang.toLowerCase().includes(q) || r.code.toLowerCase().includes(q) ||
+      r.rewardName.toLowerCase().includes(q));
+  }
+  if(statusF) list = list.filter(r=>r.status===statusF);
+  if(dateF) list = list.filter(r=> r.timestamp.slice(0,10)===dateF);
+
+  $('#tbl-records tbody').innerHTML = list.map(r=>`
+    <tr>
+      <td>${fmtDate(r.timestamp)}</td>
+      <td>${escapeHtml(r.nama)}</td>
+      <td>${escapeHtml(r.dealer)}</td>
+      <td>${escapeHtml(r.cabang)}</td>
+      <td>${escapeHtml(r.rewardName)}</td>
+      <td><b>${r.code}</b></td>
+      <td><span class="pill ${r.status==='CLAIMED'?'pill-claimed':'pill-unclaimed'}">${r.status}</span></td>
+      <td>${r.status==='UNCLAIMED' ? `<button class="btn btn-secondary btn-sm" data-claim="${r.id}">Verifikasi</button>` : (r.claimPic? 'oleh '+escapeHtml(r.claimPic):'-')}</td>
+    </tr>`).join('') || '<tr><td colspan="8" style="color:var(--ink-soft);">Belum ada data peserta.</td></tr>';
+
+  $all('[data-claim]').forEach(b=> b.addEventListener('click', ()=> openClaimModal(b.dataset.claim)));
+}
+['rec-search','rec-filter-status','rec-filter-date'].forEach(id=>{
+  $('#'+id).addEventListener('input', renderRecordsTable);
+  $('#'+id).addEventListener('change', renderRecordsTable);
+});
+
+function openClaimModal(id){
+  claimTargetId = id;
+  const rec = records.find(r=>r.id===id);
+  $('#claim-modal-desc').textContent = 'Konfirmasi penukaran hadiah "'+rec.rewardName+'" untuk kode '+rec.code+' atas nama '+rec.nama+'.';
+  $('#claim-pic-name').value='';
+  $('#modal-claim').classList.add('active');
+}
+$('#btn-cancel-claim').addEventListener('click', ()=>{ $('#modal-claim').classList.remove('active'); claimTargetId=null; });
+$('#btn-confirm-claim').addEventListener('click', async ()=>{
+  const pic = $('#claim-pic-name').value.trim();
+  if(!pic){ toast('Nama PIC wajib diisi'); return; }
+  const claimTime = new Date().toISOString();
+  await updateDoc(doc(db,'records',claimTargetId), {status:'CLAIMED', claimTime, claimPic:pic});
+  records = await fetchRecords();
+  $('#modal-claim').classList.remove('active');
+  renderRecordsTable(); renderOverview();
+  toast('Hadiah ditandai CLAIMED');
+});
+
+$('#btn-verify-code').addEventListener('click', async ()=>{
+  const code = $('#verify-code-input').value.trim().toUpperCase();
+  const out = $('#verify-result');
+  const snap = await getDoc(doc(db,'records',code));
+  if(!snap.exists()){
+    out.innerHTML = '<span style="color:var(--danger);font-weight:700;">INVALID</span> — Kode tidak ditemukan.';
+    return;
+  }
+  const rec = {id:snap.id, code:snap.id, ...snap.data()};
+  out.innerHTML = `<b>${rec.status}</b> — ${escapeHtml(rec.nama)} (${escapeHtml(rec.dealer)}, ${escapeHtml(rec.cabang)}) memenangkan <b>${escapeHtml(rec.rewardName)}</b> pada ${fmtDate(rec.timestamp)}.`
+    + (rec.status==='UNCLAIMED' ? ` <button class="btn btn-secondary btn-sm" style="margin-top:8px;" id="verify-claim-now">Verifikasi Sekarang</button>` : '');
+  const btnNow = document.getElementById('verify-claim-now');
+  if(btnNow) btnNow.addEventListener('click', ()=> openClaimModal(rec.id));
+});
+
+$('#btn-export-csv').addEventListener('click', ()=>{
+  const headers = ['Timestamp','Nama','Dealer','Cabang','No HP','Kode Promo','Hadiah','Winner Code','Status','Waktu Klaim','PIC Klaim'];
+  const rows = records.map(r=>[
+    r.timestamp, r.nama, r.dealer, r.cabang, r.hp||'', r.promo||'', r.rewardName, r.code, r.status, r.claimTime||'', r.claimPic||''
+  ]);
+  const csv = [headers, ...rows].map(row=>
+    row.map(cell=> '"'+String(cell).replace(/"/g,'""')+'"').join(',')
+  ).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pecah-telur-peserta-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('CSV diunduh');
+});
+
+/* =========================================================
+   ADMIN — SETTINGS
+   ========================================================= */
+function fillSettingsForm(){
+  $('#set-program-name').value = settings.programName || '';
+  $('#set-period-start').value = settings.periodStart || '';
+  $('#set-period-end').value = settings.periodEnd || '';
+  $('#set-active').checked = !!settings.active;
+  $('#set-maxplay').value = settings.maxPlay || 1;
+  $('#set-disclaimer').value = settings.disclaimer || '';
+}
+$('#btn-save-settings').addEventListener('click', async ()=>{
+  const newSettings = {
+    programName: $('#set-program-name').value.trim() || 'Pecah Telur',
+    periodStart: $('#set-period-start').value,
+    periodEnd: $('#set-period-end').value,
+    active: $('#set-active').checked,
+    maxPlay: Math.max(1, parseInt($('#set-maxplay').value)||1),
+    disclaimer: $('#set-disclaimer').value.trim()
+  };
+  await saveSettings(newSettings);
+  settings = await fetchSettings();
+  toast('Pengaturan disimpan');
+  renderLandingInfo();
+});
+
+$('#btn-reset-data').addEventListener('click', async ()=>{
+  if(!confirm('Yakin reset SEMUA data peserta, pemenang, dan stok hadiah? Tindakan ini permanen.')) return;
+  const recSnap = await getDocs(collection(db,'records'));
+  for(const d of recSnap.docs){ await deleteDoc(d.ref); }
+  const rwSnap = await getDocs(collection(db,'rewards'));
+  for(const d of rwSnap.docs){ await deleteDoc(d.ref); }
+  for(const r of DEFAULT_REWARDS){ await setDoc(doc(db,'rewards',r.id), r); }
+  rewards = await fetchRewards();
+  records = await fetchRecords();
+  renderOverview(); renderRewardsList(); renderRecordsTable();
+  toast('Semua data direset');
+});
+
+/* =========================================================
+   AUTH STATE & INIT
+   Anonymous auth dipakai untuk peserta biasa (dibutuhkan oleh
+   Firestore security rules di SETUP-FIREBASE.md). Login admin
+   pakai email/password menggantikan sesi anonim untuk tab ini.
+   ========================================================= */
+(async function init(){
+  if(CONFIG_NOT_SET){
+    showScreen('screen-config-gate');
+    return;
+  }
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(user && !user.isAnonymous){
+      isAdmin = true;
+      await enterAdmin();
+    }else{
+      isAdmin = false;
+    }
+  });
+
+  try{
+    await signInAnonymously(auth);
+  }catch(e){
+    console.error('Anonymous sign-in gagal', e);
+  }
+
+  await loadAll();
+  renderLandingInfo();
+})();
+</script>
+</body>
+</html>
